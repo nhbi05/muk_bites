@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'screens/splash_screen.dart'; // Add this import for SplashScreen
 import 'screens/landing_page.dart';
-import 'screens/landing.dart';
 import 'screens/auth/login.dart';
 import 'screens/auth/signup_screen.dart';
 import 'screens/customer/customer_home.dart';
@@ -28,7 +28,7 @@ class MukBitesApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'MukBites',
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false, // Changed to false for cleaner look
       theme: ThemeData(
         // Primary theme
         primarySwatch: MaterialColor(
@@ -138,7 +138,7 @@ class MukBitesApp extends StatelessWidget {
           selectedLabelStyle: TextStyle(fontWeight: FontWeight.w500),
         ),
         
-        // Floating action button theme
+        // Floating action button theme - FIXED: Changed from floatingActionButtonThemeData to floatingActionButtonTheme
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.white,
@@ -158,7 +158,7 @@ class MukBitesApp extends StatelessWidget {
       // Route definitions
       routes: {
         '/': (context) => SplashScreen(),
-        '/landing': (context) => LandingScreen(),
+        '/landing': (context) => LandingScreen(), // Make sure this matches your actual class name
         '/login': (context) => LoginScreen(),
         '/signup': (context) => SignUpScreen(),
         '/customer-home': (context) => CustomerHomeScreen(),

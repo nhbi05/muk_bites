@@ -25,4 +25,11 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.white,
   );
+
+  static const TextStyle mukBites = TextStyle(
+    fontFamily: 'Creepster',
+    fontSize: 40,
+    color: Colors.white,
+    letterSpacing: 2,
+  );
 }

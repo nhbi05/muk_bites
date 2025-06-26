@@ -39,9 +39,11 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController.forward();
 
-    // Navigate to landing screen after 3 seconds
+    // Navigate to landing screen after 3 seconds with mounted check
     Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/landing');
+      if (mounted) {  // ← This is the fix!
+        Navigator.pushReplacementNamed(context, '/landing');
+      }
     });
   }
 
@@ -66,41 +68,15 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(60),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.restaurant_menu,
-                        size: 60,
-                        color: AppColors.primary,
-                      ),
+                    Image.asset(
+                      'assets/images/logo.png',
+                      width: 100,
+                      height: 100,
                     ),
-                    SizedBox(height: 24),
+                    SizedBox(height: 20),
                     Text(
-                      'MukBites',
-                      style: AppTextStyles.header.copyWith(
-                        fontSize: 32,
-                        color: AppColors.white,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Delicious meals delivered to your campus',
-                      style: AppTextStyles.body.copyWith(
-                        color: AppColors.white.withOpacity(0.9),
-                      ),
-                      textAlign: TextAlign.center,
+                      'MUK BITES',
+                      style: AppTextStyles.mukBites, // Using your custom style
                     ),
                   ],
                 ),

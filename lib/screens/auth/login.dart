@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colours.dart';
 import '../../constants/text_styles.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -167,14 +170,54 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  void _handleSignIn() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Implement actual authentication logic
-      // For now, navigate to customer home as default
+void _goHome(String role) {
+  switch (role) {
+    case 'Customer':
       Navigator.pushReplacementNamed(context, '/customer-home');
+      break;
+    case 'Vendor':
+      Navigator.pushReplacementNamed(context, '/vendor-home');
+      break;
+    case 'Delivery':
+      Navigator.pushReplacementNamed(context, '/delivery-home');
+      break;
+    default:
+      Navigator.pushReplacementNamed(context, '/customer-home');
+  }
+}
+Future<void> _handleSignIn() async {
+  if (_formKey.currentState!.validate()) {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .get();
+
+      final role = snapshot.data()?['role'] ?? 'Customer';
+      _goHome(role);
+
+    } on FirebaseAuthException catch (e) {
+      String message = 'Login failed';
+      if (e.code == 'user-not-found') {
+        message = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Wrong password provided.';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     }
   }
+}
+
+
 
   @override
   void dispose() {

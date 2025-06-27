@@ -12,7 +12,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   google_fonts: ^6.1.0
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.17.4    
+  cloud_firestore: ^4.15.5  
+  google_sign_in: ^6.2.1  
 
   cupertino_icons: ^1.0.8
 
@@ -33,6 +38,7 @@ flutter:
     - family: Creepster
       fonts:
         - asset: assets/fonts/Creepster-Regular.ttf
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

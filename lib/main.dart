@@ -8,8 +8,10 @@ import 'screens/customer/customer_home.dart';
 import 'screens/vendor/vendor_home.dart';
 import 'screens/delivery/delivery_home.dart';
 import 'constants/app_colours.dart';
-
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MukBitesApp());
 }
 

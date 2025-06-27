@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_colours.dart';
 import '../../constants/text_styles.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -219,22 +221,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _handleSignUp() {
-    if (_formKey.currentState!.validate()) {
-      // Navigate based on selected role
-      switch (selectedRole) {
-        case 'Customer':
-          Navigator.pushReplacementNamed(context, '/customer-home');
-          break;
-        case 'Vendor':
-          Navigator.pushReplacementNamed(context, '/vendor-home');
-          break;
-        case 'Delivery':
-          Navigator.pushReplacementNamed(context, '/delivery-home');
-          break;
-      }
-    }
+ Future<void> _handleSignUp() async {
+  if (!_formKey.currentState!.validate()) return;
+
+  try {
+    // 1. create the Firebase Auth user
+    final userCredential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+    final uid = userCredential.user!.uid;
+
+    // 2. write the extra profile fields to Firestore
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'name'      : _nameController.text.trim(),
+      'email'     : _emailController.text.trim(),
+      'phone'     : _phoneController.text.trim(),
+      'role'      : selectedRole,
+      'createdAt' : FieldValue.serverTimestamp(),
+    });
+
+    // 3. send user to the correct home screen
+    _goHome(selectedRole);
+
+  } on FirebaseAuthException catch (e) {
+    final msg = switch (e.code) {
+      'email-already-in-use' => 'That e-mail is already registered.',
+      'weak-password'        => 'Choose a stronger password.',
+      _                      => 'Sign-up failed: ${e.message}',
+    };
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
+}
+
+void _goHome(String role) {
+  switch (role) {
+    case 'Customer': Navigator.pushReplacementNamed(context, '/customer-home'); break;
+    case 'Vendor'  : Navigator.pushReplacementNamed(context, '/vendor-home');   break;
+    case 'Delivery': Navigator.pushReplacementNamed(context, '/delivery-home'); break;
+  }
+}
+
 
   @override
   void dispose() {
